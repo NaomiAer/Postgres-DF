@@ -1,0 +1,119 @@
+-- Database: prueba_final
+
+-- DROP DATABASE IF EXISTS prueba_final;
+
+CREATE DATABASE prueba_final
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Spanish_Mexico.1252'
+    LC_CTYPE = 'Spanish_Mexico.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+    
+ -- Table: public.client
+
+-- DROP TABLE IF EXISTS public.client;
+
+CREATE TABLE IF NOT EXISTS public.client
+(
+    client_id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    birthdate date NOT NULL,
+    gender character varying(6) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT client_pkey PRIMARY KEY (client_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.client
+    OWNER to postgres;
+
+\copy client_table FROM '"C:\Users\naomi\Downloads\client_table.csv"' DELIMITER ',' CSV
+   
+   -- Table: public.driver
+
+-- DROP TABLE IF EXISTS public.driver;
+
+CREATE TABLE IF NOT EXISTS public.driver
+(
+    driver_id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    birthdate date NOT NULL,
+    gender character varying(6) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT driver_pkey PRIMARY KEY (driver_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.driver
+    OWNER to postgres;
+    
+\copy driver_table FROM '"C:\Users\naomi\Downloads\driver_table.csv"' DELIMITER ',' CSV
+ 
+ -- Table: public.reservation
+
+-- DROP TABLE IF EXISTS public.reservation;
+
+CREATE TABLE IF NOT EXISTS public.reservation
+(
+    reservation_id integer NOT NULL,
+    seats double precision NOT NULL,
+    total_price integer NOT NULL,
+    trip_id integer NOT NULL,
+    client_id integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    CONSTRAINT reservation_pkey PRIMARY KEY (reservation_id),
+    CONSTRAINT fk_client_id FOREIGN KEY (client_id)
+        REFERENCES public.client (client_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_tripd_id FOREIGN KEY (trip_id)
+        REFERENCES public.trip (trip_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.reservation
+    OWNER to postgres;
+    
+\copy reservation_table FROM '"C:\Users\naomi\Downloads\reservation_table.csv"' DELIMITER ',' CSV
+    
+-- Table: public.trip
+
+-- DROP TABLE IF EXISTS public.trip;
+
+CREATE TABLE IF NOT EXISTS public.trip
+(
+    trip_id integer NOT NULL,
+    driver_id integer NOT NULL,
+    on_sale_at timestamp with time zone NOT NULL,
+    departure_at timestamp with time zone NOT NULL,
+    arrival_at timestamp with time zone NOT NULL,
+    vehicle_capacity integer NOT NULL,
+    seat_price "char" NOT NULL,
+    route_name text COLLATE pg_catalog."default" NOT NULL,
+    line_name text COLLATE pg_catalog."default" NOT NULL,
+    route_type text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT trip_pkey PRIMARY KEY (trip_id),
+    CONSTRAINT fk_driver_id FOREIGN KEY (driver_id)
+        REFERENCES public.driver (driver_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.trip
+    OWNER to postgres;
+    
+\copy trip_table FROM '"C:\Users\naomi\Downloads\trip_table.csv"' DELIMITER ',' CSV
