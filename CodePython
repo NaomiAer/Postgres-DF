@@ -10,3 +10,27 @@ reservation=( "SELECT * FROM public.reservation" )
 reservation_ps=pd.read_sql(reservation,con)
 trip=( "SELECT * FROM public.trip" )
 trip_ps=pd.read_sql(trip,con)
+
+con = psycopg2.connect(database="prueba_final", user="postgres", password="Escamilla99", host="localhost", port="5432")
+cur = con.cursor()
+cur.execute('''CREATE TABLE BD_final
+      (ADMISSION INT PRIMARY KEY     NOT NULL,
+      trip_id           INTEGER    NOT NULL,
+      departure_at      TIMESTAMPTZ     NOT NULL,
+      arrival_at        TIMESTAMPTZ     NOT NULL,
+      route_name        TEXT  NOT NULL,
+      vehicle_capacity  INTEGER    NOT NULL,  
+      sold_seats        INTEGER    NOT NULL,
+      revenue           INTEGER    NOT NULL,
+      occupancy         INTEGER    NOT NULL);''')
+con.commit()
+con.close()
+
+con = psycopg2.connect(database="prueba_final", user="postgres", password="Escamilla99", host="localhost", port="5432")
+cur=con.cursor()
+cur.execute('''INSERT INTO BD_final (trip_id,departure_at, arrival_at) 
+SELECT trip_id,departure_at, arrival_at, route_name,vehicle_capacity
+FROM trip 
+WHERE trip_id,departure_at, arrival_at, route_name,vehicle_capacity''')
+con.commit()
+con.close()
