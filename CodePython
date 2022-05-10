@@ -1,0 +1,12 @@
+import pandas as pd
+import sqlite3
+import psycopg2
+con = psycopg2.connect(database="prueba_final", user="postgres", password="Escamilla99", host="localhost", port="5432")
+client=( "SELECT * FROM public.client" )
+client_ps=pd.read_sql(client,con)
+driver=( "SELECT * FROM public.driver" )
+driver_ps=pd.read_sql(driver,con)
+reservation=( "SELECT * FROM public.reservation" )
+reservation_ps=pd.read_sql(reservation,con)
+trip=( "SELECT * FROM public.trip" )
+trip_ps=pd.read_sql(trip,con)
